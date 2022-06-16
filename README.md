@@ -2,6 +2,7 @@
 <img src="https://github.com/statusrank/XCurveOpt/blob/master/img/Xcurve-logo.png">
 </div>
 </center>
+
 ***
 # XCurveOpt: Machine Learning with X-Curve Metrics
 
