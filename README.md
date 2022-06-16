@@ -9,6 +9,8 @@
 - [XCurveOpt: Machine Learning with X-Curve Metrics](#xcurveopt-machine-learning-with-x-curve-metrics)
   - [Latest News](#latest-news)
   - [Introduction](#introduction)
+    - [Advantages of XcurveOpt](#advantages-of-xcurveopt)
+    - [Wide real-world applications](#wide-real-world-applications)
   - [Supported Curves in XCurveOpt](#supported-curves-in-xcurveopt)
   - [Installation](#installation)
   - [Quickstart](#quickstart)
@@ -26,6 +28,11 @@
 ## Introduction
 XCurveOpt is an end-to-end machine learning PyTorch library for X-Curve metrics optimizations.
 
+### Advantages of XcurveOpt
+......
+### Wide real-world applications
+......
+
 ## Supported Curves in XCurveOpt
 | X-Curve | Description |
 | :----: | :----: |
@@ -35,15 +42,15 @@ XCurveOpt is an end-to-end machine learning PyTorch library for X-Curve metrics 
 ***<center><font color='#dd00dd'>More X-Curves are stepping up the development. Please stay tuned! </font></center>***
 
 ## Installation
-
+<!--
 You need the following packages to install XCurveOpt:
 ```python
 - Python >= 3.6+
 - Pytorch >= 1.8+
 - Numpy >= 1.21+
 - scikit-learn >= 1.0+
-```
-Then you can get XCurveOpt 
+```-->
+You can get XCurveOpt by
 ```sh
 pip install XCurveOpt
 ```
