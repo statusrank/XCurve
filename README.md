@@ -14,7 +14,6 @@
   - [Qucikstart](#qucikstart)
   - [Contact & Contribution](#contact--contribution)
   - [Citation](#citation)
-  - [License](#license)
 
 
 ***<center><font color='#dd00dd'> Please visit the [website](https://xcurveopt.org.cn) for more details on XCurveOpt!</font></center>***
@@ -141,5 +140,3 @@ author    = {Zhiyong Yang, Qianqian Xu, Shilong Bao, Yuan He, Xiaochun Cao and Q
   pages     = {11820--11829},
   year      = {2021}
 ```
-## License
-
