@@ -1,8 +1,7 @@
-
-<!--![XCurveOpt-1.0v](https://github.com/statusrank/XCurveOpt/img/Xcurve-logo.png)-->
-
-![XCurveOpt-1.0v](img/Xcurve-logo.png)
-
+<div align=center>
+<img src="https://github.com/statusrank/XCurveOpt/blob/master/img/Xcurve-logo.png">
+</div>
+</center>
 ***
 # XCurveOpt: Machine Learning with X-Curve Metrics
 
