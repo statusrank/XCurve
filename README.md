@@ -67,13 +67,12 @@ from XCurveOpt.AUROC.losses import SquareAUCLoss
 from XCurveOpt.AUROC.optimizer import SGD
 
 # create model or you can adopt any DNN models by Pytorch
-
 from XCurveOpt.AUROC.models import generate_net
 
 # set params to create model
 args = edict({
     "model_type": "resnet18", # (support resnet18,resnet20, densenet121 and mlp)
-    "num_classes": 1,
+    "num_classes": 2,
     "pretrained": None
 })
 model = generate_net(args).cuda()
@@ -113,7 +112,7 @@ trainloader, valloader, testloader = get_data_loaders(
 # Note that, in the get_datasets(), we conduct stratified sampling for train_set  
 # using the StratifiedSampler at from XCurveOpt.AUROC.dataloaders import StratifiedSampler
 
-# forword of model
+# forward of model
 for x, target in trainloader:
 
     x, target  = x.cuda(), target.cuda()
@@ -127,6 +126,7 @@ for x, target in trainloader:
     loss.backward()
     optimizer.step()
 ```
+
 ## Contact & Contribution
 If you find any issues or plan to contribute back bug-fixes, please contact us by [Shilong Bao](https://scholar.google.com.hk/citations?user=5ZCgkQkAAAAJ&hl=zh-CN) (Email: baoshilong@iie.ac.cn) or [Zhiyong Yang](https://joshuaas.github.io/) (Email: yangzhiyong21@ucas.ac.cn)
 
