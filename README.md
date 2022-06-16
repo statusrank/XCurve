@@ -11,7 +11,7 @@
   - [Introduction](#introduction)
   - [Supported Curves in XCurveOpt](#supported-curves-in-xcurveopt)
   - [Installation](#installation)
-  - [Qucikstart](#qucikstart)
+  - [Quickstart](#quickstart)
   - [Contact & Contribution](#contact--contribution)
   - [Citation](#citation)
 
@@ -48,7 +48,7 @@ Then you can get XCurveOpt
 pip install XCurveOpt
 ```
 
-## Qucikstart
+## Quickstart
 Let us take the multi-class AUROC optimization as an example curve here. Detailed tutorial could be found in the website (https://xcurveopt.org.cn).
 
 ```python
