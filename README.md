@@ -5,7 +5,16 @@
 ***
 # XCurveOpt: Machine Learning with X-Curve Metrics
 
-[toc]
+- [XCurveOpt: Machine Learning with X-Curve Metrics](#xcurveopt-machine-learning-with-x-curve-metrics)
+  - [Latest News](#latest-news)
+  - [Introduction](#introduction)
+  - [Supported Curves in XCurveOpt](#supported-curves-in-xcurveopt)
+  - [Installation](#installation)
+  - [Qucikstart](#qucikstart)
+  - [Contact & Contribution](#contact--contribution)
+  - [Citation](#citation)
+  - [License](#license)
+
 
 ***<center><font color='#dd00dd'> XCurveOpt is an end-to-end machine learning PyTorch library for X-Curve metrics optimizations. </br></br> Please visit the [website](https://xcurveopt.org.cn) for more details on XCurveOpt!</font></center>***
 
