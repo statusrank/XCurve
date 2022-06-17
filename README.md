@@ -14,7 +14,7 @@
   - [Supported Curves in XCurveOpt](#supported-curves-in-xcurveopt)
   - [Installation](#installation)
   - [Quickstart](#quickstart)
-  - [Contact & Contribution](#contact--contribution)
+  - [Contact \& Contribution](#contact--contribution)
   - [Citation](#citation)
 
 
@@ -26,7 +26,17 @@
 - <font color='red'> (New!)</font> <font color='blue'> 2022.6：</font> The XCurveOpt-v1.0.0 is released! Please Try now!
 
 ## Introduction
-XCurveOpt is an end-to-end machine learning PyTorch library for X-Curve metrics optimizations.
+In recent years, Machine Learning (ML) has achieved significant advances in many domains, such as image recognition, machine translation, and biological information processing, promoting AI development. However, despite great success, it is well-known that the data often exhibits a **long-tailed/imbalanced property** in real-world applications, which may become one of the critical obstacles for ML deployment. Specifically, the current studies are mainly established by minimizing accuracy (or cross-entropy) criteria, where the limited consideration of the decision thresholds cannot adapt to the practical changes in data distributions, leading to unsatisfactory performance in real-world applications. 
+
+To overcome this, **XCurveOpt focuses on the design criteria of the objective function for ML tasks, which could be formalized as the series of X-metric (say AUROC, AUPRC, AUTKC) optimization problems considering all decision thresholds during the training phase.**
+
+Take AUROC as an example to present the high-level intuition of XCurveOpt to achieve our goal:
+<div align=center>
+<img src="https://github.com/statusrank/XCurveOpt/blob/master/img/AUROC-curve.png">
+</div>
+</center>
+
+ 
 
 ### Advantages of XcurveOpt
 ......
@@ -101,19 +111,34 @@ criterion = SquareAUCLoss(
 from XCurveOpt.AUROC.dataloaders import get_datasets
 from XCurveOpt.AUROC.dataloaders import get_data_loaders
 
-dataset_args = {
-    'some needed args to get datasets, see the doc.'
-}
-loader_args = {
-    'mini-batch':64
-}
+# set dataset params, see our doc. for more details.
+dataset_args = edict({
+    "data_dir": "...",
+    "input_size": [32, 32],
+    "norm_params": {
+        "mean": [123.675, 116.280, 103.530],
+        "std": [58.395, 57.120, 57.375]
+        },
+    "use_lmdb": True,
+    "resampler_type": "None",
+    "sampler": { # only used for binary classification
+        "rpos": 1,
+        "rneg": 10
+        },
+    "npy_style": True,
+    "aug": True, 
+    "class2id": { # positive (minority) class idx
+        "1": 1
+    }
+})
+
 train_set, val_set, test_set = get_datasets(dataset_args)
 trainloader, valloader, testloader = get_data_loaders(
     train_set,
     val_set,
     test_set,
-    loader_args['mini-batch'], # train_batch_size
-    loader_args['mini-batch'] # test_batch_size
+    train_batch_size=32,
+    test_batch_size =64
 )
 # Note that, in the get_datasets(), we conduct stratified sampling for train_set  
 # using the StratifiedSampler at from XCurveOpt.AUROC.dataloaders import StratifiedSampler
@@ -122,11 +147,14 @@ trainloader, valloader, testloader = get_data_loaders(
 for x, target in trainloader:
 
     x, target  = x.cuda(), target.cuda()
+    # target.shape => [batch_size, ]
     # Note that we ask for the prediction of the model among [0,1] 
-    # for ant binary (i.e., sigmoid) or multi-class (i.e., softmax) AUROC optimization.
+    # for any binary (i.e., sigmoid) or multi-class (i.e., softmax) AUROC optimization.
 
-    pred = model(x) 
+    pred = model(x) # [batch_size, num_classess] when num_classes > 2, o.w. output [batch_size, ] 
+
     loss = criterion(pred, target)
+    
     # backward
     optimizer.zero_grad()
     loss.backward()
