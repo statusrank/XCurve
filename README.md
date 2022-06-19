@@ -1,72 +1,75 @@
 <div align=center>
-<img src="https://github.com/statusrank/XCurveOpt/blob/master/img/Xcurve-logo.png">
+<img src="https://github.com/statusrank/XCurveLearn/blob/master/img/Xcurve-logo.png">
 </div>
-</center>
 
 ***
-# XCurveOpt: Machine Learning with X-Curve Metrics
+# XCurveLearn: Machine Learning with X-Curve Metrics
 
-- [XCurveOpt: Machine Learning with X-Curve Metrics](#xcurveopt-machine-learning-with-x-curve-metrics)
+- [XCurveLearn: Machine Learning with X-Curve Metrics](#xcurvelearn-machine-learning-with-x-curve-metrics)
   - [Latest News](#latest-news)
   - [Introduction](#introduction)
-    - [Advantages of XcurveOpt](#advantages-of-xcurveopt)
-    - [Wide real-world applications](#wide-real-world-applications)
-  - [Supported Curves in XCurveOpt](#supported-curves-in-xcurveopt)
+    - [Advantages of XCurveLearn](#advantages-of-xcurvelearn)
+    - [Wide Real-World Applications](#wide-real-world-applications)
+  - [Supported Curves in XCurveLearn](#supported-curves-in-xcurvelearn)
   - [Installation](#installation)
   - [Quickstart](#quickstart)
   - [Contact \& Contribution](#contact--contribution)
   - [Citation](#citation)
 
 
-***<center><font color='#dd00dd'> Please visit the [website](https://xcurveopt.org.cn) for more details on XCurveOpt!</font></center>***
+***<center><font color='#dd00dd'> Please visit the [website](https://XCurveLearn.org.cn) for more details on XCurveLearn!</font></center>***
 
 ---
 
 ## Latest News
-- <font color='red'> (New!)</font> <font color='blue'> 2022.6：</font> The XCurveOpt-v1.0.0 is released! Please Try now!
+- <font color='red'> (New!)</font> <font color='blue'> 2022.6：</font> The XCurveLearn-v1.0.0 has been released! Please Try now!
 
 ## Introduction
-In recent years, Machine Learning (ML) has achieved significant advances in many domains, such as image recognition, machine translation, and biological information processing, promoting AI development. However, despite great success, it is well-known that the data often exhibits a **long-tailed/imbalanced property** in real-world applications, which may become one of the critical obstacles for ML deployment. Specifically, the current studies are mainly established by minimizing accuracy (or cross-entropy) criteria, where the limited consideration of the decision thresholds cannot adapt to the practical changes in data distributions, leading to unsatisfactory performance in real-world applications. 
+In recent years, Machine Learning (ML) has achieved significant advances in many domains, such as image recognition, machine translation, and biological information processing, promoting AI development. However, despite great success, it is well-known that the data often exhibits a **long-tailed/imbalanced property** in real-world applications, posing a critical challenge for the practical performances of deployed ML algorithms. Why? This is because the current studies are mainly established by **minimizing accuracy (or cross-entropy) criteria**, and then one needs to figure out a decision threshold to determine the category of samples on top of their prediction scores. In practice, such limited consideration of the decision threshold cannot adapt to the changes in data distributions and the growing business requirements, leading to unsatisfactory performance in real-world applications. 
 
-To overcome this, **XCurveOpt focuses on the design criteria of the objective function for ML tasks, which could be formalized as the series of X-metric (say AUROC, AUPRC, AUTKC) optimization problems considering all decision thresholds during the training phase.**
+To overcome this, **XCurveLearn focuses on the design criteria of the objective function for ML tasks, which can be formulated as a series of X-metric (say AUROC, AUPRC, AUTKC) optimization problems considering the average performance of all decision thresholds during the training phase.**
 
-Take AUROC as an example to present the high-level intuition of XCurveOpt to achieve our goal:
+To better understand how the XCurveLearn achieves such a goal, let us take AUROC as an example in a high-level manner, as shown in the following figure:
 <div align=center>
-<img src="https://github.com/statusrank/XCurveOpt/blob/master/img/AUROC-curve.png">
+<img src="https://github.com/statusrank/XCurveLearn/blob/master/img/AUROC-curve.png">
 </div>
 </center>
 
  
 
-### Advantages of XcurveOpt
+### Advantages of XCurveLearn
 ......
-### Wide real-world applications
-......
+### Wide Real-World Applications
+There is a wide range of applications for XCurveLearn in the real world, especially the data following a long-tailed/imbalanced distribution. Several cases are listed below:
+<div align=center>
+<img src="https://github.com/statusrank/XCurveLearn/blob/master/img/applications.png">
+</div>
 
-## Supported Curves in XCurveOpt
+
+## Supported Curves in XCurveLearn
 | X-Curve | Description |
 | :----: | :----: |
-| [XCurveOpt.AUROC]() | an efficient optimization library for Area Under the ROC curve (AUROC), such as <font color='blue'>multi-class AUROC</font> and <font color='blue'>partial AUROC</font> optimization. |
+| [XCurveLearn.AUROC]() | an efficient optimization library for Area Under the ROC curve (AUROC), such as <font color='blue'>multi-class AUROC</font> and <font color='blue'>partial AUROC</font> optimization. |
 | ... | ... |
 
 ***<center><font color='#dd00dd'>More X-Curves are stepping up the development. Please stay tuned! </font></center>***
 
 ## Installation
 <!--
-You need the following packages to install XCurveOpt:
+You need the following packages to install XCurveLearn:
 ```python
 - Python >= 3.6+
 - Pytorch >= 1.8+
 - Numpy >= 1.21+
 - scikit-learn >= 1.0+
 ```-->
-You can get XCurveOpt by
+You can get XCurveLearn by
 ```sh
-pip install XCurveOpt
+pip install XCurveLearn
 ```
 
 ## Quickstart
-Let us take the multi-class AUROC optimization as an example curve here. Detailed tutorial could be found in the website (https://xcurveopt.org.cn).
+Let us take the multi-class AUROC optimization as an example curve here. Detailed tutorial could be found in the website (https://XCurveLearn.org.cn).
 
 ```python
 '''
@@ -77,13 +80,13 @@ import torch
 from easydict import EasyDict as edict
 
 # import loss of AUROC
-from XCurveOpt.AUROC.losses import SquareAUCLoss
+from XCurveLearn.AUROC.losses import SquareAUCLoss
 
 # import optimier (or one can use any optimizer supported by PyTorch)
-from XCurveOpt.AUROC.optimizer import SGD
+from XCurveLearn.AUROC.optimizer import SGD
 
 # create model or you can adopt any DNN models by Pytorch
-from XCurveOpt.AUROC.models import generate_net
+from XCurveLearn.AUROC.models import generate_net
 
 # set params to create model
 args = edict({
@@ -108,8 +111,8 @@ criterion = SquareAUCLoss(
 # You can construct your own dataset/dataloader 
 # but must ensure that there at least one sample for every class in each mini-batch 
 # to calculate the AUROC loss. Or, you can do this:
-from XCurveOpt.AUROC.dataloaders import get_datasets
-from XCurveOpt.AUROC.dataloaders import get_data_loaders
+from XCurveLearn.AUROC.dataloaders import get_datasets
+from XCurveLearn.AUROC.dataloaders import get_data_loaders
 
 # set dataset params, see our doc. for more details.
 dataset_args = edict({
@@ -141,7 +144,7 @@ trainloader, valloader, testloader = get_data_loaders(
     test_batch_size =64
 )
 # Note that, in the get_datasets(), we conduct stratified sampling for train_set  
-# using the StratifiedSampler at from XCurveOpt.AUROC.dataloaders import StratifiedSampler
+# using the StratifiedSampler at from XCurveLearn.AUROC.dataloaders import StratifiedSampler
 
 # forward of model
 for x, target in trainloader:
