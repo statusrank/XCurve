@@ -17,7 +17,7 @@
   - [Citation](#citation)
 
 
-***<center><font color='#dd00dd'> Please visit the [website](https://XCurve.org.cn) for more details on XCurve!</font></center>***
+***<center><font color='#dd00dd'> Please visit the [website](https://XCurveOpt.org.cn) for more details on XCurve!</font></center>***
 
 ---
 
