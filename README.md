@@ -13,7 +13,7 @@
   - [Supported Curves in XCurve](#supported-curves-in-xcurve)
   - [Installation](#installation)
   - [Quickstart](#quickstart)
-  - [Contact \& Contribution](#contact--contribution)
+  - [Contact & Contribution](#contact--contribution)
   - [Citation](#citation)
 
 
@@ -28,6 +28,12 @@
 In recent years, Machine Learning (ML) has achieved significant advances in many domains, such as image recognition, machine translation, and biological information processing, promoting AI development. However, despite great success, it is well-known that the data often exhibits a **long-tailed/imbalanced property** in real-world applications, posing a critical challenge for the practical performances of deployed ML algorithms. Why? This is because the current studies are mainly established by **minimizing accuracy (or cross-entropy) criteria**, and then one needs to figure out a decision threshold to determine the category of samples on top of their prediction scores. In practice, such limited consideration of the decision threshold cannot adapt to the changes in data distributions and the growing business requirements, leading to unsatisfactory performance in real-world applications. 
 
 To overcome this, **XCurve focuses on the design criteria of the objective function for ML tasks, which can be formulated as a series of X-metric (say AUROC, AUPRC, AUTKC) optimization problems considering the average performance of all decision thresholds during the training phase.**
+
+Here is the framework of XCurve
+<div align=center>
+<img src="https://github.com/statusrank/XCurve/blob/master/img/xcurve-framework.png">
+</div>
+
 
 To better understand how the XCurve achieves such a goal, let us take AUROC as an example in a high-level manner, as shown in the following figure:
 <div align=center>
