@@ -42,9 +42,6 @@ To better understand how the XCurve achieves such a goal, let us take AUROC as a
 </center>
 
  
-
-### Advantages of XCurve
-......
 ### Wide Real-World Applications
 There is a wide range of applications for XCurve in the real world, especially the data following a long-tailed/imbalanced distribution. Several cases are listed below:
 <div align=center>
