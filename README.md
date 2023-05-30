@@ -168,7 +168,7 @@ for x, target in trainloader:
 ```
 
 ## Contact & Contribution
-If you find any issues or plan to contribute back bug-fixes, please contact us by [Shilong Bao](https://scholar.google.com.hk/citations?user=5ZCgkQkAAAAJ&hl=zh-CN) (Email: baoshilong@iie.ac.cn) or [Zhiyong Yang](https://joshuaas.github.io/) (Email: yangzhiyong21@ucas.ac.cn)
+If you find any issues or plan to contribute back bug-fixes, please contact us by [Shilong Bao](https://statusrank.github.io/) (Email: baoshilong@iie.ac.cn) or [Zhiyong Yang](https://joshuaas.github.io/) (Email: yangzhiyong21@ucas.ac.cn)
 
 ***<center><font color='#dd00dd'> The authors appreciate all contributions!</font></center>***
 ## Citation
