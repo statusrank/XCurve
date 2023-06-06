@@ -20,9 +20,9 @@ from torch.optim import lr_scheduler
 
 # from utils import *
 from XCurve.AUROC.dataloaders.imbalance_cifar import IMBALANCECIFAR10, IMBALANCECIFAR100
-from mnist_dataset import IMBALANCEMNIST
-from XCurve.AUROC.models.wideresnetwideresnet import *
-from mnist_widesesnet import WideResNet_mnist
+from XCurve.AUROC.dataloaders.mnist_dataset import IMBALANCEMNIST
+from XCurve.AUROC.models.wideresnet import *
+from XCurve.AUROC.models.mnist_widesesnet import WideResNet_mnist
 from XCurve.AUROC.optimizer import ours_opt
 from XCurve.AUROC.losses.ADAUC import *
 from XCurve.AUROC.dataloaders.sampler import *
