@@ -8,12 +8,11 @@
 - [XCurve: Machine Learning with X-Curve Metrics](#xcurve-machine-learning-with-x-curve-metrics)
   - [Latest News](#latest-news)
   - [Introduction](#introduction)
-    - [Advantages of XCurve](#advantages-of-xcurve)
     - [Wide Real-World Applications](#wide-real-world-applications)
   - [Supported Curves in XCurve](#supported-curves-in-xcurve)
   - [Installation](#installation)
   - [Quickstart](#quickstart)
-  - [Contact & Contribution](#contact--contribution)
+  - [Contact \& Contribution](#contact--contribution)
   - [Citation](#citation)
 
 
@@ -29,7 +28,12 @@ In recent years, Machine Learning (ML) has achieved significant advances in many
 
 To overcome this, **XCurve focuses on the design criteria of the objective function for ML tasks, which can be formulated as a series of X-metric (say AUROC, AUPRC, AUTKC) optimization problems considering the average performance of all decision thresholds during the training phase.**
 
-Here is the framework of XCurve
+Here is the high-level insights of XCurve:
+<div align=center>
+<img src="https://github.com/statusrank/XCurve/blob/master/img/xcurve-insight.png">
+</div>
+
+and this is the library of XCurve:
 <div align=center>
 <img src="https://github.com/statusrank/XCurve/blob/master/img/xcurve-framework.png">
 </div>
@@ -43,16 +47,20 @@ To better understand how the XCurve achieves such a goal, let us take AUROC as a
 
  
 ### Wide Real-World Applications
-There is a wide range of applications for XCurve in the real world, especially the data following a long-tailed/imbalanced distribution. Several cases are listed below:
+There is a wide range of applications for XCurve in the real world, especially the data following a long-tailed/imbalanced distribution. 
+Several cases are listed below:
 <div align=center>
-<img src="https://github.com/statusrank/XCurve/blob/master/img/applications.png">
+<img src="https://github.com/statusrank/XCurve/blob/master/img/applications1.png">
 </div>
 
 
 ## Supported Curves in XCurve
 | X-Curve | Description |
 | :----: | :----: |
-| [XCurve.AUROC]() | an efficient optimization library for Area Under the ROC curve (AUROC), such as <font color='blue'>multi-class AUROC</font> and <font color='blue'>partial AUROC</font> optimization. |
+| [XCurve.AUROC]() | an efficient optimization library for Area Under the ROC curve (AUROC). |
+| [XCurve.AUPRC]() | an efficient optimization library for Area Under the Precision-Recall curve (AUPRC). |
+| [XCurve.AUTKC]() | an efficient optimization library for Area Under the Top-K curve (AUPRC). |
+| [XCurve.OpenAUC]() | an efficient optimization library for Area Under the Open ROC curve (OpenAUC). |
 | ... | ... |
 
 ***<center><font color='#dd00dd'>More X-Curves are stepping up the development. Please stay tuned! </font></center>***
