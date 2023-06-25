@@ -50,7 +50,7 @@ To better understand how the XCurve achieves such a goal, let us take AUROC as a
 There is a wide range of applications for XCurve in the real world, especially the data following a long-tailed/imbalanced distribution. 
 Several cases are listed below:
 <div align=center>
-<img src="https://github.com/statusrank/XCurve/blob/master/img/applications1.png">
+<img src="https://github.com/statusrank/XCurve/blob/master/img/applications.png">
 </div>
 
 
@@ -62,6 +62,7 @@ Several cases are listed below:
 | [XCurve.AUTKC]() | an efficient optimization library for Area Under the Top-K curve (AUPRC). |
 | [XCurve.OpenAUC]() | an efficient optimization library for Area Under the Open ROC curve (OpenAUC). |
 | ... | ... |
+
 
 ***<center><font color='#dd00dd'>More X-Curves are stepping up the development. Please stay tuned! </font></center>***
 
