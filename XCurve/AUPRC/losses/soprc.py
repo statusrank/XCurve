@@ -6,15 +6,14 @@ from .base_loss import BaseLoss
 
 class SOPRC(BaseLoss):
 
-    def __init__(self, num_sample_per_id, temp, beta, prior_mul=0.1, num_v=100, **kwargs):
+    def __init__(self, num_sample_per_id, tau, beta, prior_mul=0.1, **kwargs):
         super(SOPRC, self).__init__()
-        self.forward = self._forward
 
         self.num_sample_per_id = num_sample_per_id
-        self.temp = temp
+        self.temp = tau
         self.beta = beta
         self.prior_mul = prior_mul
-        self.num_v = num_v
+        self.num_v = 100
         self.v = None
         self.alpha = None
 
@@ -53,11 +52,9 @@ class SOPRC(BaseLoss):
         x = torch.clamp(x, max=0)
         return 2 / (1 + torch.exp(x / temp)) - 1
 
-    def _forward(self, samples):
+    def forward(self, feats, targets):
         ## preprocess input 
-        feats = samples['feat']      ## ((batch_size*num_sample_per_id) * D)
-        targets = samples['target']  ## ((batch_size*num_sample_per_id) * 1)
-
+        targets = targets.view(-1)
         batch_size = targets.shape[0]
         nc = batch_size // self.num_sample_per_id
         ns = self.num_sample_per_id

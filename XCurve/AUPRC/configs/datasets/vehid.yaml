@@ -1,0 +1,19 @@
+#### dataset define
+subset: ~
+dataset_train: train
+dataset_val: val
+dataset_test: test_small
+data_dir: ./data/VehID/images
+list_dir: ./data/VehID/split_list
+num_sample_per_id: 4
+inst_blc: True
+input_size: 256
+batchsize: 56
+normal_mean:
+  - 0.485
+  - 0.456
+  - 0.406
+normal_std:
+  - 0.229
+  - 0.224
+  - 0.225

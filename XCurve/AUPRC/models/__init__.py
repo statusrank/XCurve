@@ -1,3 +1,3 @@
-from .gen_network import generate_net
+from .retrieval_model import RetrievalModel
 
-__all__ = [generate_net]
+__all__ = [RetrievalModel]
