@@ -4,10 +4,10 @@ import math
 from .base_loss import BaseLoss
 
 
-class SOPRC(BaseLoss):
+class ListStableAUPRCLoss(BaseLoss):
 
     def __init__(self, num_sample_per_id, tau, beta, prior_mul=0.1, **kwargs):
-        super(SOPRC, self).__init__()
+        super(ListStableAUPRCLoss, self).__init__()
 
         self.num_sample_per_id = num_sample_per_id
         self.temp = tau
