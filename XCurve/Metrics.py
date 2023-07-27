@@ -1,6 +1,6 @@
 import torch
 import numpy as np
-from sklearn.metrics import roc_auc_score, accuracy_score
+from sklearn.metrics import roc_curve, roc_auc_score, accuracy_score
 
 def TopkAcc(y_pred, y_true, k_list=(1, )):
     """
@@ -105,7 +105,9 @@ def Acc_At_T(preds, labels, t):
 
     return acc
 
-def Acc_At_TPR(open_set_preds, open_set_labels, thresholds, tpr, r=0.95):
+def Acc_At_TPR(open_set_preds, open_set_labels, r=0.95):
+    _, tpr, thresholds = roc_curve(open_set_labels, open_set_preds, drop_intermediate=False)
+
     # Error rate at r TAR
     _, idx = find_nearest(tpr, r)
     t = thresholds[idx]

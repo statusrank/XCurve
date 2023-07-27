@@ -71,7 +71,9 @@ def Acc_At_T(preds, labels, t):
 
     return acc
 
-def Acc_At_TPR(open_set_preds, open_set_labels, thresholds, tpr, r=0.95):
+def Acc_At_TPR(open_set_preds, open_set_labels, r=0.95):
+    _, tpr, thresholds = roc_curve(open_set_labels, open_set_preds, drop_intermediate=False)
+
     # Error rate at r TAR
     _, idx = find_nearest(tpr, r)
     t = thresholds[idx]
@@ -204,8 +206,7 @@ class OpenSetEvaluator():
         # OPEN SET EVALUATION
         # ----------------------------
 
-        _, tpr, thresh = roc_curve(open_set_labels, open_set_preds, drop_intermediate=False)
-        acc_95 = Acc_At_TPR(open_set_preds, open_set_labels, thresh, tpr)
+        acc_95 = Acc_At_TPR(open_set_preds, open_set_labels)
         auroc = AUROC(open_set_preds, open_set_labels)
 
         open_set_preds_known_cls = open_set_preds[~open_set_labels.astype('bool')]
