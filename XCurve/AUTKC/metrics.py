@@ -4,17 +4,22 @@ def evaluate(output, target, k_list=(1, )):
     return TopkAcc(output, target, k_list), AUTKC(output, target, k_list)
 
 
-def TopkAcc(output, target, k_list=(1, )):
+def TopkAcc(y_pred, y_true, k_list=(1, )):
     """
-    Computes the accuracy over the k top predictions for each k in the specified k-list
+    Computes the top-k accuracy for each k in the specified k-list.
+    :param y_pred: the predictions of a multiclass model (batch_size, n_classes)
+    :param y_true: the ground-truth labels (batch_size, )
+    :param k_list: the list of the specified k
+    :return: top-k accuracy
+    :reference: ...
     """
     with torch.no_grad():
         maxk = max(k_list)
-        batch_size = target.size(0)
+        batch_size = y_true.size(0)
 
-        _, pred = output.topk(maxk, 1, True, True)
+        _, pred = y_pred.topk(maxk, 1, True, True)
         pred = pred.t()
-        correct = pred.eq(target.view(1, -1).expand_as(pred))
+        correct = pred.eq(y_true.view(1, -1).expand_as(pred))
 
         res = []
         for k in k_list:
@@ -22,10 +27,10 @@ def TopkAcc(output, target, k_list=(1, )):
             res.append(correct_k.mul_(100.0 / batch_size))
         return res
 
-def AUTKC(output, target, k_list=(1, )):
+def AUTKC(y_pred, y_true, k_list=(1, )):
     with torch.no_grad():
-        s_y = output.gather(-1, target.view(-1, 1))
-        s_top, _ = output.topk(max(k_list) + 1, 1, True, True)
+        s_y = y_pred.gather(-1, y_true.view(-1, 1))
+        s_top, _ = y_pred.topk(max(k_list) + 1, 1, True, True)
         tmp = s_y > s_top
 
         res = []
