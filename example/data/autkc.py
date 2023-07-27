@@ -14,7 +14,8 @@ import torchvision.models as models
 from XCurve.AUTKC.dataloaders import get_data_loader
 from XCurve.AUTKC.utils.common_utils import AverageMeter, dict2obj, setup_seed
 from XCurve.AUTKC.optimizer import adjust_learning_rate
-from XCurve.AUTKC.losses import BaseHingeLoss, HingeTopKLoss, CETopKLoss, StandardAUTKCLoss
+from XCurve.AUTKC.losses.AUTKCLoss import StandardAUTKCLoss
+from XCurve.AUTKC.losses.TopKLoss import BaseHingeLoss, HingeTopKLoss, CETopKLoss
 from XCurve.AUTKC.metrics import evaluate
 
 warnings.filterwarnings("ignore")
