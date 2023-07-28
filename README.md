@@ -48,6 +48,7 @@ The core functions of this library includes the following contents:
  <div align=center>
 <img src="https://github.com/statusrank/XCurve/blob/master/img/outline.png">
 </div>
+
 ### Wide Real-World Applications
 There is a wide range of applications for XCurve in the real world, especially the data following a long-tailed/imbalanced distribution. 
 Several cases are listed below:
