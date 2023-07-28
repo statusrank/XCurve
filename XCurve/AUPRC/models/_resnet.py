@@ -1,20 +1,10 @@
 import torch
 from torch import Tensor
 import torch.nn as nn
-# from .._internally_replaced_utils import load_state_dict_from_url
 from typing import Type, Any, Callable, Union, List, Optional
 
 
 __all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152']
-
-
-model_urls = {
-    'resnet18': 'https://download.pytorch.org/models/resnet18-f37072fd.pth',
-    'resnet34': 'https://download.pytorch.org/models/resnet34-b627a593.pth',
-    'resnet50': 'https://download.pytorch.org/models/resnet50-0676ba61.pth',
-    'resnet101': 'https://download.pytorch.org/models/resnet101-63fe2227.pth',
-    'resnet152': 'https://download.pytorch.org/models/resnet152-394f9c45.pth'
-}
 
 
 def conv3x3(in_planes: int, out_planes: int, stride: int = 1, groups: int = 1, dilation: int = 1) -> nn.Conv2d:
@@ -134,47 +124,6 @@ class Bottleneck(nn.Module):
 
         return out
 
-class Mixer(nn.Module):
-    def __init__(self, channel_in, channel_latent):
-        super(Mixer, self).__init__()
-        self.encoder = nn.Sequential(
-            conv1x1(channel_in, channel_latent),
-            # norm_layer(channel_latent),
-            nn.ReLU(inplace=True),
-            conv3x3(channel_latent, channel_latent),
-            # norm_layer(channel_latent)
-        )
-
-        self.decoder = nn.Sequential(
-            conv3x3(channel_latent, channel_latent),
-            nn.ReLU(inplace=True),
-            conv1x1(channel_latent, channel_in)
-        )
-
-    def forward(self, x, y):
-        x_shape = list(x.shape)
-        y_shape = list(y.shape)
-        bs = x.shape[0]
-        ns = (y == y[0]).sum()
-        nc = bs // ns
-
-        z = self.encoder(x).view(nc, ns, -1)
-
-        #########################################################
-        z_mean = z.mean(1, keepdim=True).expand(-1, ns, -1)
-        alpha = torch.rand(nc, ns, 1).cuda() * 0.2 + 0.8
-        z_aug = alpha * z + (1 - alpha) * z_mean
-        #########################################################
-
-        z_aug = self.decoder(z_aug.view(bs, -1, x_shape[-2], x_shape[-1])) + x
-
-        x_shape[0] *= 2
-        x = torch.cat([x.view(nc, 1, ns, -1), z_aug.view(nc, 1, ns, -1)], dim=1).view(x_shape)
-        y_shape[0] *= 2
-        y = y.view(nc, 1, ns).repeat(1, 2, 1).view(nc, ns*2).view(y_shape)
-
-        return x, y
-
 
 class ResNet(nn.Module):
 
@@ -219,11 +168,6 @@ class ResNet(nn.Module):
                                        dilate=replace_stride_with_dilation[2])
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
         self.fc = nn.Linear(512 * block.expansion, num_classes)
-
-        # ######################################
-        # self.mix_layer2 = Mixer(512, 128)
-        # self.mix_layer3 = Mixer(1024, 128)
-        # ######################################
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -285,61 +229,6 @@ class ResNet(nn.Module):
 
         return x
 
-    # def _forward_aug(self, x: Tensor, y: Tensor, aug_ratio: int) -> Tensor:
-    #     def _double_feats(x, y, aug_ratio):
-    #         x_shape = list(x.shape)
-    #         y_shape = list(y.shape)
-    #         bs = x.shape[0]
-    #         ns = (y == y[0]).sum()
-    #         nc = bs // ns
-
-    #         x = x.view(nc, ns, 1, -1)
-
-    #         alpha = torch.rand(nc, ns, ns*(aug_ratio - 1), 1).cuda()
-    #         alpha *= 0.1 / alpha.sum(1, keepdim=True)
-    #         x_aug = (alpha * x).sum(1).view(nc, ns, aug_ratio - 1, -1) + 0.9 * x
-
-    #         # #########################################################
-    #         # x_mean = x.mean(1, keepdim=True).expand(-1, ns, -1, -1)
-    #         # alpha = torch.rand(nc, ns, 1, 1).cuda() * 0.2 + 0.8
-    #         # x_aug = alpha * x + (1 - alpha) * x_mean
-    #         # #########################################################
-
-    #         x_shape[0] *= aug_ratio
-    #         x = torch.cat([x.view(nc, 1, ns, -1), x_aug.view(nc, aug_ratio - 1, ns, -1)], dim=1).view(x_shape)
-    #         y_shape[0] *= aug_ratio
-    #         y = y.view(nc, 1, ns).repeat(1, aug_ratio, 1).view(nc, ns*aug_ratio).view(y_shape)
-
-    #         return x, y
-
-    #     x = self.conv1(x)
-    #     x = self.bn1(x)
-    #     x = self.relu(x)
-    #     x = self.maxpool(x)
-
-    #     x = self.layer1(x)
-    #     x = self.layer2(x)
-    #     x, y = _double_feats(x, y, aug_ratio)
-    #     # x, y = self.mix_layer2(x, y)
-    #     x = self.layer3(x)
-    #     x, y = _double_feats(x, y, aug_ratio)
-    #     # x, y = self.mix_layer3(x, y)
-    #     x = self.layer4(x)
-    #     # x, y = _double_feats(x, y, 2)
-
-    #     x = self.avgpool(x)
-    #     x = torch.flatten(x, 1)
-    #     x = self.fc(x)
-
-    #     return x, y
-
-    # def forward(self, x: Tensor, y=None, aug_ratio=None) -> Tensor:
-    #     # with torch.cuda.amp.autocast(enabled=True):
-    #     if y is None:
-    #         return self._forward_impl(x)
-    #     else:
-    #         return self._forward_aug(x, y, aug_ratio)
-
 
 def _resnet(
     arch: str,
@@ -350,10 +239,6 @@ def _resnet(
     **kwargs: Any
 ) -> ResNet:
     model = ResNet(block, layers, **kwargs)
-    # if pretrained:
-    #     state_dict = load_state_dict_from_url(model_urls[arch],
-    #                                           progress=progress)
-    #     model.load_state_dict(state_dict)
     return model
 
 

@@ -1,7 +1,5 @@
 import torch
-from abc import ABCMeta, abstractmethod
-
-from numpy import nonzero
+from abc import abstractmethod
 
 from .base_loss import BaseLoss
 
@@ -28,10 +26,7 @@ class PairLoss(BaseLoss):
     def _criterion(self, x):
         pass
 
-    def forward(self, samples):
-
-        feats = samples['feat']
-        targets = samples['target']
+    def forward(self, feats, targets):
         bs = targets.shape[0]
         nc = bs // self.num_sample_per_id
         ns = self.num_sample_per_id
@@ -49,72 +44,6 @@ class PairLoss(BaseLoss):
 
         return loss
 
-class ContrastiveLoss(PairLoss):
-    def __init__(self, **kwargs):
-        super(ContrastiveLoss, self).__init__(**kwargs)
-
-    def _criterion(self, sim_pos, sim_neg):
-        assert len(sim_pos.shape) == 2 and len(sim_neg.shape) == 2
-        assert sim_pos.shape[0] == sim_neg.shape[0]
-        bs, n_pos = sim_pos.shape
-        _, n_neg = sim_neg.shape
-
-        sim_pos = sim_pos.view(-1)
-        sim_neg = sim_neg.view(-1)
-        sim_pos = torch.index_select(sim_pos, 0, (sim_pos<self.thres[1]).nonzero().view(-1))
-        sim_neg = torch.index_select(sim_neg, 0, (sim_neg>self.thres[0]).nonzero().view(-1))
-
-        if len(sim_pos) > 0:
-            loss_pos = (self.thres[1] - sim_pos).sum()
-            if self.norm:
-                loss_pos /= len(sim_pos)
-        else:
-            loss_pos = torch.tensor([.0]).cuda()
-        
-        if len(sim_neg) > 0:
-            loss_neg = (sim_neg - self.thres[0]).sum()
-            if self.norm:
-                loss_neg /= len(sim_neg)
-        else:
-            loss_neg = torch.tensor([.0]).cuda()
-
-        loss = loss_pos + loss_neg
-
-        return loss.mean()
-
-class TripletLoss(PairLoss):
-    def __init__(self, **kwargs):
-        super(TripletLoss, self).__init__(**kwargs)
-
-    def _criterion(self, sim_pos, sim_neg):
-        assert len(sim_pos.shape) == 2 and len(sim_neg.shape) == 2
-        assert sim_pos.shape[0] == sim_neg.shape[0]
-        bs, n_pos = sim_pos.shape
-        _, n_neg = sim_neg.shape
-
-        loss = torch.clamp(sim_neg.view(bs, n_neg, 1) - sim_pos.view(bs, 1, n_pos) \
-                + self.thres, min=0).view(bs, -1).sum(-1)
-
-        return loss.mean()
-
-class MultiSimilarityLoss(PairLoss):
-    def __init__(self, alpha, beta, **kwargs):
-        super(MultiSimilarityLoss, self).__init__(**kwargs)
-        self.alpha = alpha
-        self.beta = beta
-
-    def _criterion(self, sim_pos, sim_neg):
-        assert len(sim_pos.shape) == 2 and len(sim_neg.shape) == 2
-        assert sim_pos.shape[0] == sim_neg.shape[0]
-        bs, n_pos = sim_pos.shape
-        _, n_neg = sim_neg.shape
-        alpha = self.alpha
-        beta = self.beta
-
-        loss = 1/alpha * torch.log(1 + torch.exp(-alpha*(sim_pos - self.thres)).sum(-1)) + \
-             1/beta * torch.log(1 + torch.exp(beta*(sim_neg - self.thres)).sum(-1))
-
-        return loss.mean()
 
 class VarianceLoss(PairLoss):
     def __init__(self, inter_clss=False, **kwargs):
@@ -137,15 +66,12 @@ class VarianceLoss(PairLoss):
 
         if len(diff_pos) > 0:
             loss_pos = (diff_pos**2).mean()
-            # loss_pos = (diff_pos).mean()
         else:
             loss_pos = torch.tensor([.0]).cuda()
         if len(diff_neg) > 0:
             loss_neg = (diff_neg**2).mean()
-            # loss_neg = (diff_neg).mean()
         else:
             loss_neg = torch.tensor([.0]).cuda()
         loss = self.thres[0] * loss_pos + self.thres[1] * loss_neg
-        # loss = loss_pos + loss_neg
 
         return loss.mean()

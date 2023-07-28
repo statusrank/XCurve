@@ -4,9 +4,8 @@ from abc import ABC
 
 
 class BaseModel(nn.Module, ABC):
-    def __init__(self, args):
+    def __init__(self):
         super().__init__()
-        self.args = args
 
     def freeze(self):
         for p in self.parameters():

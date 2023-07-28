@@ -11,19 +11,20 @@ import torch.optim as optim
 import torch.utils.data
 import torchvision.models as models
 
-from XCurve.AUTKC.dataset import data_loader
-from XCurve.AUTKC.utils import AverageMeter, evaluate, adjust_learning_rate, dict2obj, setup_seed
-from XCurve.AUTKC.loss import Hinge, Loss1, Loss2, Loss3, Loss4, Loss5, TopKCE, AUTKCLoss
+from XCurve.AUTKC.dataloaders import get_data_loader
+from XCurve.AUTKC.utils.common_utils import AverageMeter, dict2obj, setup_seed
+from XCurve.AUTKC.optimizer import adjust_learning_rate
+from XCurve.AUTKC.losses import BaseHingeLoss, HingeTopKLoss, CETopKLoss, StandardAUTKCLoss
+from XCurve.AUTKC.metrics import evaluate
 
 warnings.filterwarnings("ignore")
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', default='cifar-100', type=str, required=True)
 parser.add_argument('--loss', default='ce', type=str, required=True)
-parser.add_argument('--ft', default=1, type=int)
-
+parser.add_argument('--ft', default=True, type=bool)
 parser.add_argument('-k', default=5, type=int)
-parser.add_argument('--weight_scheme', default='NaiveExp', type=str)
+parser.add_argument('--surrogate', default='Exp', type=str)
 
 def train(train_loader, model, criterion, optimizer, epoch, print_freq, k_list):
     batch_time = AverageMeter('Time', ':6.3f')
@@ -103,13 +104,13 @@ args_dict = {
 
     'dataset': args_parser.dataset,
     'loss': args_parser.loss,
-    'ft': bool(args_parser.ft),
+    'ft': args_parser.ft,
 }
 args_dict['epochs'] = 90 if args_dict['dataset'] in ['cifar-10', 'cifar-100', 'place-365'] else 50
-if args_dict['loss'] in ['l1', 'l2', 'l3', 'l4', 'l5', 'topkce', 'avg1', 'avg2']:
+if args_dict['loss'] in ['l1', 'l2', 'l3', 'l4', 'l5', 'topkce']:
     args_dict['k'] = args_parser.k
 elif args_dict['loss'] == 'autkc':
-    args_dict['weight_scheme'] = args_parser.weight_scheme
+    args_dict['surrogate'] = args_parser.surrogate
 
 default_args = {
     'batch_size': 128, 
@@ -127,7 +128,7 @@ print(args)
 
 ######## Prepare data, model, loss, optimizer ########
 setup_seed(args.rand)
-train_loader, val_loader, _, num_class = data_loader(os.path.join(args.dataset_dir, args.dataset), args.batch_size, args.workers, args.train_ratio)
+train_loader, val_loader, _, num_class = get_data_loader(os.path.join(args.dataset_dir, args.dataset), args.batch_size, args.workers, args.train_ratio)
 args.k_list = [_ for _ in range(1, min(num_class, 11))]
 
 if args.dataset in ['place-365', ]:
@@ -147,21 +148,13 @@ model = model.cuda()
 if args.loss == 'ce':
     criterion = nn.CrossEntropyLoss().cuda()
 elif args.loss == 'hinge':
-    criterion = Hinge().cuda()
-elif args.loss == 'l1':
-    criterion = Loss1(args.k).cuda()
-elif args.loss == 'l2':
-    criterion = Loss2(args.k).cuda()
-elif args.loss == 'l3':
-    criterion = Loss3(args.k).cuda()
-elif args.loss == 'l4':
-    criterion = Loss4(args.k).cuda()
-elif args.loss == 'l5':
-    criterion = Loss5(args.k).cuda()
+    criterion = BaseHingeLoss().cuda()
+elif args.loss in ['l1', 'l2', 'l3', 'l4', 'l5']:
+    criterion = HingeTopKLoss(args.k, args.loss).cuda()
 elif args.loss == 'topkce':
-    criterion = TopKCE(args.k).cuda()
+    criterion = CETopKLoss(args.k).cuda()
 elif args.loss == 'autkc':
-    criterion = AUTKCLoss(args.weight_scheme, args.K, args.epoch_to_paced).cuda()
+    criterion = StandardAUTKCLoss(args.surrogate, args.K, args.epoch_to_paced).cuda()
 else:
     raise ValueError
     
@@ -169,7 +162,7 @@ optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, we
 
 ######## Construct the dir of checkpoint ########
 if args.loss == 'autkc':
-    loss_name = 'autkc-{}-{}'.format(args.weight_scheme, args.K)
+    loss_name = 'autkc-{}-{}'.format(args.surrogate, args.K)
 else:
     loss_name = args.loss if 'k' not in args_dict.keys() else '{}-{}'.format(args.loss, args.k)
 loss_name = 'ft-' + loss_name if args.ft else loss_name

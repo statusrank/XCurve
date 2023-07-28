@@ -1,47 +1,30 @@
 import torch.nn.functional as F
 
-from models.base_model import BaseModel
-from models.resnet import resnet50
+from .base_model import BaseModel
+from .resnet import resnet50
 
-def Euclidean_distance(x, y):
-    return ((x - y)**2).sum(-1)
-
-def cosine_distance(x, y):
-    return (F.normalize(x) * F.normalize(y)).sum(-1)
 
 class RetrievalModel(BaseModel):
-    """
-    """
-    def __init__(self, args):
-        super(RetrievalModel, self).__init__(args)
+    def __init__(self, output_channels, freeze=False, freezeBN=False):
+        super(RetrievalModel, self).__init__()
+        self.output_channels = output_channels
+        self.backbone = resnet50(output_channels)
 
-        self.backbone = resnet50(args)
-
-        if args.get('freeze', False):
+        if freeze:
             self.freeze()
 
-        if args.get('freeze_bn', False):
+        if freezeBN:
             self.freezeBN()
 
-    def forward(self, samples, mode='test'):
+    def forward(self, x):
         """ Forward
 
         """
-        y = samples['label']
-        z = self.backbone(samples['image'])
-
-        batch_size = y.shape[0]
-        z = z.view(batch_size, -1)
-        y = y.view(batch_size)
-
+        z = self.backbone(x)
+        z = z.view(z.shape[0], -1)
         z = F.normalize(z, dim=1)
 
-        out = {
-            'feat': z,
-            'target': y
-        }
-
-        return out
+        return z
 
     def param_groups(self, lr=None, lr_fc_mul=1):
         params = list(filter(lambda x: 'fc' not in x[0] and x[1].requires_grad, self.named_parameters()))

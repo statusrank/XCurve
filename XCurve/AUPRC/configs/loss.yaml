@@ -1,0 +1,7 @@
+tau1: 0.1
+tau2: 0.001
+beta: 0.001
+prior_mul: 0.1
+num_sample_per_id: 4
+var_reg_weight_pos: 5
+var_reg_weight_neg: 1
