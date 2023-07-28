@@ -94,112 +94,113 @@ def validate(val_loader, model, print_freq, k_list):
     print('[val]', autkc_str, topks_str)
     return [float(autkc.avg) for autkc in autkcs], [float(topk.avg) for topk in topks]
 
-######## Load args ########
-args_parser = parser.parse_args()
-args_dict = {
-    'dataset_dir': 'example/data',
-    'workers': 4,
-    'print_freq': 10,
-    'train_ratio': 0.9,
-    'epoch_to_adjust_lr': 30,
+if __name__ == '__main__':
+    ######## Load args ########
+    args_parser = parser.parse_args()
+    args_dict = {
+        'dataset_dir': 'D:/dataset',
+        'workers': 4,
+        'print_freq': 10,
+        'train_ratio': 0.9,
+        'epoch_to_adjust_lr': 30,
 
-    'dataset': args_parser.dataset,
-    'loss': args_parser.loss,
-    'ft': args_parser.ft,
-}
-args_dict['epochs'] = 90 if args_dict['dataset'] in ['cifar-10', 'cifar-100', 'place-365'] else 50
-if args_dict['loss'] in ['l1', 'l2', 'l3', 'l4', 'l5', 'topkce']:
-    args_dict['k'] = args_parser.k
-elif args_dict['loss'] == 'autkc':
-    args_dict['surrogate'] = args_parser.surrogate
+        'dataset': args_parser.dataset,
+        'loss': args_parser.loss,
+        'ft': args_parser.ft,
+    }
+    args_dict['epochs'] = 90 if args_dict['dataset'] in ['cifar-10', 'cifar-100', 'place-365'] else 50
+    if args_dict['loss'] in ['l1', 'l2', 'l3', 'l4', 'l5', 'topkce']:
+        args_dict['k'] = args_parser.k
+    elif args_dict['loss'] == 'autkc':
+        args_dict['surrogate'] = args_parser.surrogate
 
-default_args = {
-    'batch_size': 128, 
-    'lr': 0.01, 
-    'weight_decay': 0.001, 
-    'momentum': 0.9, 
-    'rand': 0,
-    'K': 5,
-    'epoch_to_paced': 0
-}
-args_dict.update(default_args)
+    default_args = {
+        'batch_size': 128, 
+        'lr': 0.01, 
+        'weight_decay': 0.001, 
+        'momentum': 0.9, 
+        'rand': 0,
+        'K': 5,
+        'epoch_to_paced': 0
+    }
+    args_dict.update(default_args)
 
-args = dict2obj(args_dict)
-print(args)
+    args = dict2obj(args_dict)
+    print(args)
 
-######## Prepare data, model, loss, optimizer ########
-setup_seed(args.rand)
-train_loader, val_loader, _, num_class = get_data_loader(os.path.join(args.dataset_dir, args.dataset), args.batch_size, args.workers, args.train_ratio)
-args.k_list = [_ for _ in range(1, min(num_class, 11))]
+    ######## Prepare data, model, loss, optimizer ########
+    setup_seed(args.rand)
+    train_loader, val_loader, _, num_class = get_data_loader(os.path.join(args.dataset_dir, args.dataset), args.batch_size, args.workers, args.train_ratio)
+    args.k_list = [_ for _ in range(1, min(num_class, 11))]
 
-if args.dataset in ['place-365', ]:
-    model = nn.Sequential(
-        nn.Linear(2048, 512, bias=True), 
-        nn.ReLU(),
-        nn.Linear(512, 256, bias=True), 
-        nn.ReLU(),
-        nn.Linear(256, num_class, bias=True), 
+    if args.dataset in ['place-365', ]:
+        model = nn.Sequential(
+            nn.Linear(2048, 512, bias=True), 
+            nn.ReLU(),
+            nn.Linear(512, 256, bias=True), 
+            nn.ReLU(),
+            nn.Linear(256, num_class, bias=True), 
+        )
+    else:
+        model = models.resnet18(pretrained=args.ft)
+        num_ftrs = model.fc.in_features
+        model.fc = nn.Linear(num_ftrs, num_class)  
+    model = model.cuda()
+
+    if args.loss == 'ce':
+        criterion = nn.CrossEntropyLoss().cuda()
+    elif args.loss == 'hinge':
+        criterion = BaseHingeLoss().cuda()
+    elif args.loss in ['l1', 'l2', 'l3', 'l4', 'l5']:
+        criterion = HingeTopKLoss(args.k, args.loss).cuda()
+    elif args.loss == 'topkce':
+        criterion = CETopKLoss(args.k).cuda()
+    elif args.loss == 'autkc':
+        criterion = StandardAUTKCLoss(args.surrogate, args.K, args.epoch_to_paced).cuda()
+    else:
+        raise ValueError
+        
+    optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
+
+    ######## Construct the dir of checkpoint ########
+    if args.loss == 'autkc':
+        loss_name = 'autkc-{}-{}'.format(args.surrogate, args.K)
+    else:
+        loss_name = args.loss if 'k' not in args_dict.keys() else '{}-{}'.format(args.loss, args.k)
+    loss_name = 'ft-' + loss_name if args.ft else loss_name
+    save_dir = os.path.join(
+        'checkpoints', 
+        '{}_{}_{}_{}_{}_{}_{}_{}'.format(args.dataset, loss_name, args.epoch_to_paced, args.batch_size, args.lr, args.momentum, args.weight_decay, args.rand)
     )
-else:
-    model = models.resnet18(pretrained=args.ft)
-    num_ftrs = model.fc.in_features
-    model.fc = nn.Linear(num_ftrs, num_class)  
-model = model.cuda()
+    os.makedirs(save_dir) if not os.path.exists(save_dir) else None
 
-if args.loss == 'ce':
-    criterion = nn.CrossEntropyLoss().cuda()
-elif args.loss == 'hinge':
-    criterion = BaseHingeLoss().cuda()
-elif args.loss in ['l1', 'l2', 'l3', 'l4', 'l5']:
-    criterion = HingeTopKLoss(args.k, args.loss).cuda()
-elif args.loss == 'topkce':
-    criterion = CETopKLoss(args.k).cuda()
-elif args.loss == 'autkc':
-    criterion = StandardAUTKCLoss(args.surrogate, args.K, args.epoch_to_paced).cuda()
-else:
-    raise ValueError
-    
-optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
+    ######## Train the model ########
+    best_precs = [0.0, ] * len(args.k_list)
+    best_autkcs = [0.0, ] * len(args.k_list)
+    for epoch in range(args.epochs):
 
-######## Construct the dir of checkpoint ########
-if args.loss == 'autkc':
-    loss_name = 'autkc-{}-{}'.format(args.surrogate, args.K)
-else:
-    loss_name = args.loss if 'k' not in args_dict.keys() else '{}-{}'.format(args.loss, args.k)
-loss_name = 'ft-' + loss_name if args.ft else loss_name
-save_dir = os.path.join(
-    'checkpoints', 
-    '{}_{}_{}_{}_{}_{}_{}_{}'.format(args.dataset, loss_name, args.epoch_to_paced, args.batch_size, args.lr, args.momentum, args.weight_decay, args.rand)
-)
-os.makedirs(save_dir) if not os.path.exists(save_dir) else None
+        adjust_learning_rate(optimizer, epoch, args.lr, args.epoch_to_adjust_lr)
+        train(train_loader, model, criterion, optimizer, epoch, args.print_freq, args.k_list)
+        autkc, precs = validate(val_loader, model, args.print_freq, args.k_list)
 
-######## Train the model ########
-best_precs = [0.0, ] * len(args.k_list)
-best_autkcs = [0.0, ] * len(args.k_list)
-for epoch in range(args.epochs):
+        state = deepcopy(args_dict)
+        state['state_dict'] = model.state_dict()
+        state['optimizer'] = optimizer.state_dict()
+        state['epoch'] = epoch
+        state['precs'] = precs
+        state['autkc'] = autkc
+        
+        save_name = '{}.pth'.format(state['epoch'])
+        save_path = os.path.join(save_dir, save_name)
+        torch.save(state, save_path)
 
-    adjust_learning_rate(optimizer, epoch, args.lr, args.epoch_to_adjust_lr)
-    train(train_loader, model, criterion, optimizer, epoch, args.print_freq, args.k_list)
-    autkc, precs = validate(val_loader, model, args.print_freq, args.k_list)
-
-    state = deepcopy(args_dict)
-    state['state_dict'] = model.state_dict()
-    state['optimizer'] = optimizer.state_dict()
-    state['epoch'] = epoch
-    state['precs'] = precs
-    state['autkc'] = autkc
-    
-    save_name = '{}.pth'.format(state['epoch'])
-    save_path = os.path.join(save_dir, save_name)
-    torch.save(state, save_path)
-
-    for _ in range(len(precs)):
-        if precs[_] > best_precs[_]:
-            best_precs[_] = precs[_]
-            save_name = 'best_prec{}.pth'.format(args.k_list[_])
-            shutil.copyfile(save_path, os.path.join(save_dir, save_name))
-        if autkc[_] > best_autkcs[_]:
-            best_autkcs[_] = autkc[_]
-            save_name = 'best_autkc{}.pth'.format(args.k_list[_])
-            shutil.copyfile(save_path, os.path.join(save_dir, save_name))
-    print('[best]', best_autkcs, best_precs)
+        for _ in range(len(precs)):
+            if precs[_] > best_precs[_]:
+                best_precs[_] = precs[_]
+                save_name = 'best_prec{}.pth'.format(args.k_list[_])
+                shutil.copyfile(save_path, os.path.join(save_dir, save_name))
+            if autkc[_] > best_autkcs[_]:
+                best_autkcs[_] = autkc[_]
+                save_name = 'best_autkc{}.pth'.format(args.k_list[_])
+                shutil.copyfile(save_path, os.path.join(save_dir, save_name))
+        print('[best]', best_autkcs, best_precs)

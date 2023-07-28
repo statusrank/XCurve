@@ -7,12 +7,13 @@ class StandardAUTKCLoss(nn.Module):
         super().__init__()
         self.K = K
         self.epoch_to_paced = epoch_to_paced
+        assert surrogate in ['Sq', 'Exp', 'Logit', 'Hinge']
         self.surrogate = surrogate
         self.paced_loss = nn.CrossEntropyLoss().cuda()
 
     def forward(self, pred, y, epoch=0):
         if epoch < self.epoch_to_paced:
-            print('paced..')
+            # print('paced..')
             return self.paced_loss(pred, y)
         else:
             num_class = pred.shape[1]
