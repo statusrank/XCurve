@@ -3,11 +3,13 @@
 </div>
 
 ***
-# XCurve: Machine Learning with X-Curve Metrics
-
-- [XCurve: Machine Learning with X-Curve Metrics](#xcurve-machine-learning-with-x-curve-metrics)
+# XCurve: Machine Learning with Decision-Invariant X-Curve Metrics
+## Mission: Support end-to-end Training Solutions for Decision Invariant Models 
+- [XCurve: Machine Learning with Decision-Invariant X-Curve Metrics](#xcurve-machine-learning-with-decision-invariant-x-curve-metrics)
+  - [Mission: Support end-to-end Training Solutions for Decision Invariant Models](#mission-support-end-to-end-training-solutions-for-decision-invariant-models)
   - [Latest News](#latest-news)
   - [Introduction](#introduction)
+    - [Outline](#outline)
     - [Wide Real-World Applications](#wide-real-world-applications)
   - [Supported Curves in XCurve](#supported-curves-in-xcurve)
   - [Installation](#installation)
@@ -24,28 +26,28 @@
 - <font color='red'> (New!)</font> <font color='blue'> 2022.6：</font> The XCurve-v1.0.0 has been released! Please Try now!
 
 ## Introduction
-In recent years, Machine Learning (ML) has achieved significant advances in many domains, such as image recognition, machine translation, and biological information processing, promoting AI development. However, despite great success, it is well-known that the data often exhibits a **long-tailed/imbalanced property** in real-world applications, posing a critical challenge for the practical performances of deployed ML algorithms. Why? This is because the current studies are mainly established by **minimizing accuracy (or cross-entropy) criteria**, and then one needs to figure out a decision threshold to determine the category of samples on top of their prediction scores. In practice, such limited consideration of the decision threshold cannot adapt to the changes in data distributions and the growing business requirements, leading to unsatisfactory performance in real-world applications. 
+Recently, machine learning and deep learning technologies have been successfully employed in many complicated **high-stake decision-making** applications such as disease prediction, fraud detection, outlier detection, and criminal justice sentencing.  All these applications share a common trait known as **risk-aversion** in economics and finance terminologies. In other words, the decision-makers tend to have an **extremely low risk tolerance**. Under this context, decision-making parameters will significantly affect the performance of models. For example, in binary classification problems, we use the so-called classification threshold as the decision parameter. In the following examples, we see that changing the threshold leads to significantly different model performances.
 
-To overcome this, **XCurve focuses on the design criteria of the objective function for ML tasks, which can be formulated as a series of X-metric (say AUROC, AUPRC, AUTKC) optimization problems considering the average performance of all decision thresholds during the training phase.**
+<div align=center>
+<img src="https://github.com/statusrank/XCurve/blob/master/img/threshold.png">
+</div>
 
-Here is the high-level insights of XCurve:
+In risk-aversion problems, the decision parameters change dynamically in deployment time. Hence, the goal of X-curve learning is to learn high-quality models that can adapt to different decision conditions. Inspired by the fundamental principle of the well-known AUC optimization, our library provides a systematic solution to optimize the area under different kinds of performance curves. To be more specific, the performance curve is formed by a plot of two performance functions $x(\lambda), y(\lambda)$ of decision parameter $\lambda$. The area under a performance curve becomes the integral of the performance over all possible choices of different decision conditions. In this way, the learning systems are only required to optimize a decision-invariant metric to avoid the risk aversion issue.
+<div align=center>
+<img src="https://github.com/statusrank/XCurve/blob/master/img/xcurve.png">
+</div>
+
+XCurve now supports four kinds of performance curves including AUROC for Long-tail Recognition, AUPRC for Imbalanced Retrieval, AUTKC for Classification under Ambiguity, and OpenAUC for Open-Set Recognition.
 <div align=center>
 <img src="https://github.com/statusrank/XCurve/blob/master/img/xcurve-insight.png">
 </div>
-
-and this is the library of XCurve:
-<div align=center>
-<img src="https://github.com/statusrank/XCurve/blob/master/img/xcurve-framework.png">
-</div>
-
-
-To better understand how the XCurve achieves such a goal, let us take AUROC as an example in a high-level manner, as shown in the following figure:
-<div align=center>
-<img src="https://github.com/statusrank/XCurve/blob/master/img/AUROC-curve.png">
-</div>
 </center>
 
- 
+### Outline
+The core functions of this library includes the following contents:
+ <div align=center>
+<img src="https://github.com/statusrank/XCurve/blob/master/img/outline.png">
+</div>
 ### Wide Real-World Applications
 There is a wide range of applications for XCurve in the real world, especially the data following a long-tailed/imbalanced distribution. 
 Several cases are listed below:
