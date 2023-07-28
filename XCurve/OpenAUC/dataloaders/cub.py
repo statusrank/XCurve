@@ -6,7 +6,7 @@ from copy import deepcopy
 from torchvision.datasets.folder import default_loader
 from torchvision.datasets.utils import download_url
 from torch.utils.data import Dataset
-from utils.config import cub_root
+from ..utils.config import cub_root
 
 
 class CustomCub2011(Dataset):

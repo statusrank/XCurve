@@ -1,7 +1,7 @@
 from torchvision.datasets import CIFAR10, CIFAR100
 from copy import deepcopy
 import numpy as np
-from utils.config import cifar_10_root, cifar_100_root
+from ..utils.config import cifar_10_root, cifar_100_root
 
 class CustomCIFAR10(CIFAR10):
 
@@ -140,7 +140,7 @@ def get_cifar_10_10_datasets(train_transform, test_transform, train_classes=rang
     np.random.seed(seed)
 
     # Init train dataset and subsample training classes
-    train_dataset_whole = CustomCIFAR10(root=cifar_10_root, transform=train_transform, train=True)
+    train_dataset_whole = CustomCIFAR10(root=cifar_10_root, transform=train_transform, train=True, download=True)
     train_dataset_whole = subsample_classes(train_dataset_whole, include_classes=train_classes)
 
     # Split into training and validation sets
@@ -148,7 +148,7 @@ def get_cifar_10_10_datasets(train_transform, test_transform, train_classes=rang
     val_dataset_split.transform = test_transform
 
     # Get test set for known classes
-    test_dataset_known = CustomCIFAR10(root=cifar_10_root, transform=test_transform, train=False)
+    test_dataset_known = CustomCIFAR10(root=cifar_10_root, transform=test_transform, train=False, download=True)
     test_dataset_known = subsample_classes(test_dataset_known, include_classes=train_classes)
 
     # Get testset for unknown classes

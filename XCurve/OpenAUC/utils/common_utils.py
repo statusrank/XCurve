@@ -79,11 +79,11 @@ def init_experiment(args, runner_name=None):
         os.makedirs(root_dir)
 
     # Unique identifier for experiment
-    now = str(datetime.now()).replace(' ', '-')
+    now = str(datetime.now()).replace(' ', '-').replace(':', '-').replace('.', '-')
 
     log_dir = os.path.join(root_dir, now)
     while os.path.exists(log_dir):
-        now = str(datetime.now()).replace(' ', '-')
+        now = str(datetime.now()).replace(' ', '-').replace(':', '-').replace('.', '-')
         log_dir = os.path.join(root_dir, now)
 
     if not os.path.exists(log_dir):

@@ -4,7 +4,7 @@ import numpy as np
 import os
 
 from copy import deepcopy
-from utils.config import tin_train_root_dir, tin_val_root_dir
+from ..utils.config import tin_train_root_dir, tin_val_root_dir
 
 def create_val_img_folder(root):
     '''

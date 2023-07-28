@@ -4,9 +4,9 @@ import os.path as osp
 from functools import partial
 
 
-from models.classifier32 import classifier32
-from utils.utils import strip_state_dict, mkdir_if_missing
-from utils.config import imagenet_moco_path, places_supervised_path, places_moco_path, imagenet_supervised_path
+from ..models.classifier32 import classifier32
+from .common_utils import strip_state_dict, mkdir_if_missing
+from ..utils.config import imagenet_moco_path, places_supervised_path, places_moco_path, imagenet_supervised_path
 
 def transform_moco_state_dict_places(obj, num_classes, supervised=False):
 

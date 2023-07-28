@@ -1,13 +1,12 @@
 import torchvision
 import numpy as np
-import torch
 import os
 import pickle
 from copy import deepcopy
 
-from utils.config import imagenet_root
-from utils.config import imagenet21k_root
-from utils.config import osr_split_dir
+from ..utils.config import imagenet_root
+from ..utils.config import imagenet21k_root
+from ..utils.config import osr_split_dir
 
 osr_split_save_dir = os.path.join(osr_split_dir, 'imagenet_osr_splits.pkl')
 

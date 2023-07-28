@@ -22,7 +22,7 @@ from XCurve.OpenAUC.metrics import OpenSetEvaluator, EnsembleModel
 parser = argparse.ArgumentParser("Training")
 
 # Dataset
-parser.add_argument('--dataset', type=str, default='cub', help="")
+parser.add_argument('--dataset', type=str, default='svhn', help="")
 parser.add_argument('--out-num', type=int, default=10, help='For cifar-10-100')
 parser.add_argument('--image_size', type=int, default=64)
 
@@ -55,7 +55,7 @@ parser.add_argument('--rand_aug_m', type=int, default=30)
 parser.add_argument('--rand_aug_n', type=int, default=2)
 
 # misc
-parser.add_argument('--num_workers', default=16, type=int)
+parser.add_argument('--num_workers', default=0, type=int)
 parser.add_argument('--split_train_val', default=False, type=str2bool,
                         help='Subsample training set to create validation set', metavar='BOOL')
 parser.add_argument('--device', default='cuda:0', type=str, help='Which GPU to use')
@@ -73,13 +73,13 @@ parser.add_argument('--split_idx', default=0, type=int, help='0-4 OSR splits for
 parser.add_argument('--use_softmax_in_eval', default=False, type=str2bool,
                         help='Do we use softmax or logits for evaluation', metavar='BOOL')
 
-def train(net, criterion, optimizer, trainloader, epoch=None, **options):
+def train(net, criterion, optimizer, trainloader, **options):
     net.train()
     losses = AverageMeter()
     torch.cuda.empty_cache()
 
     loss_all = 0
-    criterion = StandardOpenAUCLoss(criterion, **options) if options['openauc'] else criterion
+    criterion = StandardOpenAUCLoss(criterion, options['alpha'], options['lambda']) if options['openauc'] else criterion
     for data, labels, _ in tqdm(trainloader):
         if options['use_gpu']:
             data, labels = data.cuda(), labels.cuda()
@@ -115,7 +115,7 @@ def test(net, testloader, outloader, **options):
 
     # Make predictions on test sets
     preds = evaluate.predict(save=False)
-    results = evaluate.evaluate(evaluate, load=False, preds=preds, normalised_ap=False)
+    results = evaluate.evaluate(evaluate, load=False, preds=preds)
 
     return results
 
@@ -160,7 +160,7 @@ def main_worker(options, args):
     # -----------------------------
     # GET LOSS
     # -----------------------------
-    Loss = importlib.import_module('loss.' + options['close_loss'])
+    Loss = importlib.import_module('XCurve.OpenAUC.losses.' + options['close_loss'])
     criterion = getattr(Loss, options['close_loss'])(**options)
 
     # -----------------------------

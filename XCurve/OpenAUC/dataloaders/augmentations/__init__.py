@@ -1,6 +1,6 @@
 from torchvision import transforms
-from data.augmentations.cut_out import *
-from data.augmentations.randaugment import RandAugment
+from .cut_out import *
+from .randaugment import RandAugment
 
 def get_transform(transform_type='default', image_size=32, args=None):
 
