@@ -4,7 +4,7 @@ import torchvision
 import torchvision.transforms as transforms
 import numpy as np
 import torchvision.datasets as datasets
-from sampler import *
+# from sampler import *
 
 class IMBALANCECIFAR10(torchvision.datasets.CIFAR10):
     cls_num = 10
@@ -110,27 +110,27 @@ class IMBALANCECIFAR100(IMBALANCECIFAR10):
         return Y.tolist()
 
 
-if __name__ == '__main__':
-    transform_train = transforms.Compose([
-        transforms.RandomCrop(32, padding=4),
-        transforms.RandomHorizontalFlip(),
-        transforms.ToTensor(),
-        # transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
-    ])
+# if __name__ == '__main__':
+#     transform_train = transforms.Compose([
+#         transforms.RandomCrop(32, padding=4),
+#         transforms.RandomHorizontalFlip(),
+#         transforms.ToTensor(),
+#         # transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+#     ])
 
-    train_dataset = IMBALANCECIFAR100(root='../', train=True, download=True, transform=transform_train)
+#     train_dataset = IMBALANCECIFAR100(root='../', train=True, download=True, transform=transform_train)
 
-    train_sampler = StratifiedSampler(class_vector=train_dataset.targets,
-                                      batch_size=128,
-                                      rpos=1,
-                                      rneg=9)
+#     train_sampler = StratifiedSampler(class_vector=train_dataset.targets,
+#                                       batch_size=128,
+#                                       rpos=1,
+#                                       rneg=9)
 
-    train_loader = torch.utils.data.DataLoader(
-        train_dataset, batch_size=128, shuffle=(train_sampler is None),
-        num_workers=2,
-        # pin_memory=True,
-        sampler=train_sampler)
+#     train_loader = torch.utils.data.DataLoader(
+#         train_dataset, batch_size=128, shuffle=(train_sampler is None),
+#         num_workers=2,
+#         # pin_memory=True,
+#         sampler=train_sampler)
 
 
-    for i, (x, y) in enumerate(train_loader):
-        print(i, x.min(), x.max(), x.mean(), x.std())
+#     for i, (x, y) in enumerate(train_loader):
+#         print(i, x.min(), x.max(), x.mean(), x.std())

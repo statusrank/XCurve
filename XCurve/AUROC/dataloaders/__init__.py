@@ -1,7 +1,7 @@
 from torch.utils.data import DataLoader
 from .dataset import DatasetRaw, DatasetFile
 from .sampler import StratifiedSampler
-from .imbalance_cifar import *
+from .imbalance_cifar import IMBALANCECIFAR10, IMBALANCECIFAR100
 
 def get_datasets(args):
     train_set = DatasetFile(args, 'train')
@@ -40,4 +40,11 @@ def get_data_loaders(train_set,
     return train_loader, val_loader, test_loader
 
 
-__all__ = ['DatasetRaw', 'DatasetFile', 'get_datasets', 'get_data_loaders', 'StratifiedSampler']
+__all__ = ['IMBALANCECIFAR10', 
+           'IMBALANCECIFAR100',
+           'DatasetRaw', 
+           'DatasetFile', 
+           'get_datasets', 
+           'get_data_loaders', 
+           'StratifiedSampler', 
+           ]
