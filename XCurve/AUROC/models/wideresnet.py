@@ -128,6 +128,6 @@ class WideResNet(nn.Module):
                     module.weight.data = F.normalize(module.weight, p=2, dim=1)
         out = self.fc(out)
         # print('2', out.mean(), out.max(), out.min())
-        out = torch.sigmoid(out)
+        # out = torch.sigmoid(out)
         # print('3', out.mean(), out.max(), out.min())
         return out

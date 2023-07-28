@@ -1,6 +1,6 @@
-from .resnet import resnet18
-from .resnet_s import resnet20
-from .densenet import densenet121
+from .resnet import *
+from .resnet_s import *
+from .densenet import *
 from .mlp import mlp
 
 def generate_net(args):
@@ -9,6 +9,4 @@ def generate_net(args):
     if not args.model_type in globals().keys():
         raise NotImplementedError("there has no %s" % (args.model_type))
 
-    return globals()[args.model_type](args)
-
-__all__ = ['generate_net']
+    return globals()[args.model_type](args.num_classes, args.pretrained)

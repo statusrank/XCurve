@@ -168,68 +168,68 @@ class ResNet(nn.Module):
         return x
 
 
-def resnet18(args):
+def resnet18(num_classes=1000, pretrained=None):
     """Constructs a ResNet-18 model.
 
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = ResNet(BasicBlock, [2, 2, 2, 2], args.num_classes)
-    if args.pretrained is not None:
-        state_dict = torch.load(args.pretrained)
+    model = ResNet(BasicBlock, [2, 2, 2, 2], num_classes)
+    if pretrained is not None:
+        state_dict = torch.load(pretrained)
         load_pretrained_model(model, state_dict)
         # model.load_state_dict(model_zoo.load_url(model_urls['resnet18']))
 
     return model
 
 
-def resnet34(args):
+def resnet34(num_classes=1000, pretrained=None):
     """Constructs a ResNet-34 model.
 
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = ResNet(BasicBlock, [3, 4, 6, 3], **kwargs)
-    if args.pretrained is not None:
-        state_dict = torch.load(args.pretrained)
+    model = ResNet(BasicBlock, [3, 4, 6, 3], num_classes)
+    if pretrained is not None:
+        state_dict = torch.load(pretrained)
         load_pretrained_model(model, state_dict)
     return model
 
 
-def resnet50(args):
+def resnet50(num_classes=1000, pretrained=None):
     """Constructs a ResNet-50 model.
 
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = ResNet(Bottleneck, [3, 4, 6, 3], **kwargs)
-    if args.pretrained is not None:
-        state_dict = torch.load(args.pretrained)
+    model = ResNet(Bottleneck, [3, 4, 6, 3], num_classes)
+    if pretrained is not None:
+        state_dict = torch.load(pretrained)
         load_pretrained_model(model, state_dict)
     return model
 
 
-def resnet101(args):
+def resnet101(num_classes=1000, pretrained=None):
     """Constructs a ResNet-101 model.
 
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = ResNet(Bottleneck, [3, 4, 23, 3], **kwargs)
-    if args.pretrained is not None:
-        state_dict = torch.load(args.pretrained)
+    model = ResNet(Bottleneck, [3, 4, 23, 3], num_classes)
+    if pretrained is not None:
+        state_dict = torch.load(pretrained)
         load_pretrained_model(model, state_dict)
     return model
 
 
-def resnet152(args):
+def resnet152(num_classes=1000, pretrained=None):
     """Constructs a ResNet-152 model.
 
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = ResNet(Bottleneck, [3, 8, 36, 3], **kwargs)
-    if args.pretrained is not None:
-        state_dict = torch.load(args.pretrained)
+    model = ResNet(Bottleneck, [3, 8, 36, 3], num_classes)
+    if pretrained is not None:
+        state_dict = torch.load(pretrained)
         load_pretrained_model(model, state_dict)
     return model
