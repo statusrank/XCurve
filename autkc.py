@@ -97,7 +97,7 @@ def validate(val_loader, model, print_freq, k_list):
 ######## Load args ########
 args_parser = parser.parse_args()
 args_dict = {
-    'dataset_dir': 'dataset',
+    'dataset_dir': 'example/data',
     'workers': 4,
     'print_freq': 10,
     'train_ratio': 0.9,

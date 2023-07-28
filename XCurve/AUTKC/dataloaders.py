@@ -46,20 +46,12 @@ class MyDataset(Dataset):
         return len(self.data) if self.dataset_name == 'place-365' else self.dataset.__len__()
 
     def transform_train(self):
-        if self.data_shape[1] <= self.input_size:
-            trs = tr.Compose([
-                    tr.ToPILImage(),
-                    tr.RandomHorizontalFlip(),
-                    tr.ToTensor()
-                ])
-        else:
-            trs = tr.Compose([
-                    tr.ToPILImage(),
-                    tr.RandomHorizontalFlip(),
-                    tr.RandomCrop(self.input_size),
-                    tr.ToTensor()
-                ])            
-        return trs
+        return tr.Compose([
+            tr.ToPILImage(),
+            tr.RandomHorizontalFlip(),
+            tr.RandomCrop(self.input_size),
+            tr.ToTensor()
+        ])
 
     def transform_validation(self):
         return tr.Compose([
