@@ -8,4 +8,5 @@ from torch.optim import Adadelta
 from torch.optim import Adagrad
 from torch.optim import Adam
 from torch.optim import AdamW
+from .AdvAUC_opt import AdvAUCOptimizer, RegAdvAUCOptimizer
 
