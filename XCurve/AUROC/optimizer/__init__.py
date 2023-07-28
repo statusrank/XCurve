@@ -10,3 +10,5 @@ from torch.optim import Adam
 from torch.optim import AdamW
 from .AdvAUC_opt import AdvAUCOptimizer, RegAdvAUCOptimizer
 
+__all__ = [SGD4MinMaxPAUC, ASGDA, SGD, Adadelta, Adagrad,
+            Adam, AdamW, AdvAUCOptimizer, RegAdvAUCOptimizer]
