@@ -72,7 +72,8 @@ class StratifiedSampler(Sampler):
 
                 assert neg_samples.shape[0] == add_neg
 
-                self.data = self.data.append(neg_samples, ignore_index=False)
+                # self.data = self.data.append(neg_samples, ignore_index=False)
+                self.data = pd.concat([self.data, neg_samples], ignore_index=False)
 
         # print("-" * 50)
         # print("after complementary the ratio, having %d images" % self.data.shape[0])
