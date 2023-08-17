@@ -10,13 +10,13 @@ from torch.utils.data import DataLoader
 import torch.backends.cudnn as cudnn
 
 from XCurve.OpenAUC.models.wrapper_classes import TimmResNetWrapper, Classifier32Wrapper
-from XCurve.OpenAUC.data.open_set_datasets import get_class_splits, get_datasets
-from XCurve.OpenAUC.loss.OpenAUCLoss import OpenAUCLoss
-from XCurve.OpenAUC.utils.utils import AverageMeter, init_experiment, seed_torch, str2bool
-from XCurve.OpenAUC.utils.train_utils import get_scheduler, get_optimizer, get_mean_lr
+from XCurve.OpenAUC.dataloaders.open_set_datasets import get_class_splits, get_datasets
+from XCurve.OpenAUC.losses.OpenAUCLoss import StandardOpenAUCLoss
+from XCurve.OpenAUC.utils.common_utils import AverageMeter, init_experiment, seed_torch, str2bool
+from XCurve.OpenAUC.optimizers import get_scheduler, get_optimizer
 from XCurve.OpenAUC.utils.model_utils import get_model, save_networks
 from XCurve.OpenAUC.utils.config import exp_root
-from XCurve.OpenAUC.utils.test_utils import EvaluateOpenSet, EnsembleModel
+from XCurve.OpenAUC.metrics import OpenSetEvaluator, EnsembleModel
 
 
 parser = argparse.ArgumentParser("Training")
@@ -79,9 +79,8 @@ def train(net, criterion, optimizer, trainloader, epoch=None, **options):
     torch.cuda.empty_cache()
 
     loss_all = 0
-    criterion = OpenAUCLoss(criterion, **options) if options['openauc'] else criterion
-    for batch_idx, (data, labels, idx) in enumerate(tqdm(trainloader)):
-
+    criterion = StandardOpenAUCLoss(criterion, **options) if options['openauc'] else criterion
+    for data, labels, _ in tqdm(trainloader):
         if options['use_gpu']:
             data, labels = data.cuda(), labels.cuda()
 
@@ -112,7 +111,7 @@ def test(net, testloader, outloader, **options):
     # ------------------------
     # EVALUATE
     # ------------------------
-    evaluate = EvaluateOpenSet(model=model, known_data_loader=testloader, unknown_data_loader=outloader)
+    evaluate = OpenSetEvaluator(model=model, known_data_loader=testloader, unknown_data_loader=outloader)
 
     # Make predictions on test sets
     preds = evaluate.predict(save=False)
