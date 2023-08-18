@@ -53,15 +53,16 @@ def extract_feature(model, data_root):
         num_workers=8, pin_memory=False)
     save_feature(model, train_loader, 'train_feature_resnet50')
 
-model_file = 'resnet50_places365.pth.tar'
-model = models.resnet50(num_classes=365)
-checkpoint = torch.load(model_file, map_location=lambda storage, loc: storage)
-state_dict = {str.replace(k,'module.',''): v for k,v in checkpoint['state_dict'].items()}
-model.load_state_dict(state_dict)
+if __name__ == '__main__':
+    model_file = 'resnet50_places365.pth.tar'
+    model = models.resnet50(num_classes=365)
+    checkpoint = torch.load(model_file, map_location=lambda storage, loc: storage)
+    state_dict = {str.replace(k,'module.',''): v for k,v in checkpoint['state_dict'].items()}
+    model.load_state_dict(state_dict)
 
-del model.fc
-model.fc = lambda x:x
-model = model.cuda()
-model.eval()
+    del model.fc
+    model.fc = lambda x:x
+    model = model.cuda()
+    model.eval()
 
-extract_feature(model, 'places365_standard')
+    extract_feature(model, 'places365_standard')

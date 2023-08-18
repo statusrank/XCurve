@@ -1,11 +1,11 @@
-from ..dataloaders.cifar import get_cifar_10_10_datasets, get_cifar_10_100_datasets
-from ..dataloaders.tinyimagenet import get_tiny_image_net_datasets
-from ..dataloaders.svhn import get_svhn_datasets
-from ..dataloaders.mnist import get_mnist_datasets
-from ..dataloaders.cub import get_cub_datasets
+from .cifar import get_cifar_10_10_datasets, get_cifar_10_100_datasets
+from .tinyimagenet import get_tiny_image_net_datasets
+from .svhn import get_svhn_datasets
+from .mnist import get_mnist_datasets
+from .cub import get_cub_datasets
 
-from ..dataloaders.open_set_splits.osr_splits import osr_splits
-from ..dataloaders.augmentations import get_transform
+from .open_set_splits.osr_splits import osr_splits
+from .augmentations import get_transform
 from ..utils.config import osr_split_dir
 
 import os
