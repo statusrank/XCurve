@@ -3,7 +3,7 @@ from copy import deepcopy
 import numpy as np
 from PIL import Image
 
-from utils.config import mnist_root
+from ..utils.config import mnist_root
 
 
 class CustomMNIST(MNIST):

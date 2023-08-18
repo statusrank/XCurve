@@ -1,7 +1,7 @@
 from torchvision.datasets import SVHN
 from copy import deepcopy
 import numpy as np
-from utils.config import svhn_root
+from ..utils.config import svhn_root
 
 
 class CustomSVHN(SVHN):
@@ -96,7 +96,7 @@ def get_svhn_datasets(train_transform, test_transform, train_classes=range(6),
     np.random.seed(seed)
 
     # Init train dataset and subsample training classes
-    train_dataset_whole = CustomSVHN(root=svhn_root, transform=train_transform, split='train')
+    train_dataset_whole = CustomSVHN(root=svhn_root, transform=train_transform, split='train', download=True)
     train_dataset_whole = subsample_classes(train_dataset_whole, include_classes=train_classes)
 
     # Split into training and validation sets
@@ -104,7 +104,7 @@ def get_svhn_datasets(train_transform, test_transform, train_classes=range(6),
     val_dataset_split.transform = test_transform
 
     # Get test set for known classes
-    test_dataset_known = CustomSVHN(root=svhn_root, transform=test_transform, split='test')
+    test_dataset_known = CustomSVHN(root=svhn_root, transform=test_transform, split='test', download=True)
     test_dataset_known = subsample_classes(test_dataset_known, include_classes=train_classes)
 
     # Get testset for unknown classes

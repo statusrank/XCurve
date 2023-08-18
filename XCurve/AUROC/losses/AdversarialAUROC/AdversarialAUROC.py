@@ -35,18 +35,20 @@ class AdvAUROCLoss(nn.Module):
             self.alpha = torch.tensor(0.2).float().cuda()
             self.alpha.requires_grad = True
     
+    def get_loss(self, y_pred, y_true):
+        loss = (1 - self.p) * torch.mean((y_pred - self.a) ** 2 * (1 == y_true).float()) + \
+               self.p * torch.mean((y_pred - self.b) ** 2 * (0 == y_true).float()) + \
+               2 * (1+self.alpha) * (torch.mean((self.p * y_pred * (0 == y_true).float() - (1 - self.p) * y_pred * (1 == y_true).float()))) - \
+               self.p * self.alpha ** 2
+        return loss
+    
     def forward(self, y_pred, y_true):
         if self.p is None:
             self.p = (y_true == 1).float().sum() / y_true.shape[0]
         
         y_pred = y_pred.reshape(-1, 1)
         y_true = y_true.reshape(-1, 1)
-        loss = (1 - self.p) * torch.mean((y_pred - self.a) ** 2 * (1 == y_true).float()) + \
-               self.p * torch.mean((y_pred - self.b) ** 2 * (0 == y_true).float()) + \
-               2 * self.alpha * (self.p * (1 - self.p) +
-                                 torch.mean((self.p * y_pred * (0 == y_true).float() - (1 - self.p) * y_pred * (
-                                             1 == y_true).float()))) - \
-               self.p * (1 - self.p) * self.alpha ** 2
+        loss = self.get_loss(y_pred, y_true)
         return loss
     
 
@@ -57,7 +59,7 @@ class RegAdvAUROCLoss(AdvAUROCLoss):
                  alpha=None,
                  lambda1=None,
                  lambda2=None) -> None:
-        super(RegAdvAUROCLoss, self).__init__()
+        super(RegAdvAUROCLoss, self).__init__(imratio=imratio, a=a, b=b, alpha=alpha)
         if lambda1 is not None:
             self.lambda1 = torch.tensor(lambda1).float().cuda()
             self.lambda1.requires_grad = True
