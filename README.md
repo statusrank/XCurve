@@ -18,12 +18,12 @@
   - [Citation](#citation)
 
 
-***<center><font color='#dd00dd'> Please visit the [website](https://XCurveOpt.org.cn) for more details on XCurve!</font></center>***
+***<center><font color='#dd00dd'> Please visit the [website](https://xcurveopt.github.io) for more details on XCurve!</font></center>***
 
 ---
 
 ## Latest News
-- <font color='red'> (New!)</font> <font color='blue'> 2022.6：</font> The XCurve-v1.0.0 has been released! Please Try now!
+- <font color='red'> (New!)</font> <font color='blue'> 2022.6：</font> The XCurve-v1.1.0 has been released! Please Try now!
 
 ## Introduction
 Recently, machine learning and deep learning technologies have been successfully employed in many complicated **high-stake decision-making** applications such as disease prediction, fraud detection, outlier detection, and criminal justice sentencing.  All these applications share a common trait known as **risk-aversion** in economics and finance terminologies. In other words, the decision-makers tend to have an **extremely low risk tolerance**. Under this context, decision-making parameters will significantly affect the performance of models. For example, in binary classification problems, we use the so-called classification threshold as the decision parameter. In the following examples, we see that changing the threshold leads to significantly different model performances.
@@ -85,7 +85,7 @@ pip install XCurve
 ```
 
 ## Quickstart
-Let us take the multi-class AUROC optimization as an example curve here. Detailed tutorial could be found in the website (https://XCurve.org.cn).
+Let us take the multi-class AUROC optimization as an example curve here. Detailed tutorial could be found in the website (https://xcurveopt.github.io/).
 
 ```python
 '''
