@@ -113,7 +113,7 @@ class RelaxedPAUCLoss(BaseAUCLoss):
         AUC_type = OP, TP (OPAUC or TPAUC optimization)
         '''
         
-        super(PAUCLoss, self).__init__(gamma, 
+        super(RelaxedPAUCLoss, self).__init__(gamma, 
                                         E_k,
                                         weight_scheme,
                                         num_classes,
