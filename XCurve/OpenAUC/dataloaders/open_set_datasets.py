@@ -64,7 +64,7 @@ def get_class_splits(dataset, split_idx=0, cifar_plus_n=10):
         train_classes = osr_splits[dataset][split_idx]
         open_set_classes = osr_splits['cifar-10-100-{}'.format(cifar_plus_n)][split_idx]
 
-    elif dataset == 'tinyimagenet':
+    elif dataset == 'tinyimagenet': # first run the function create_val_img_folder in tinyimagenet.py
         train_classes = osr_splits[dataset][split_idx]
         open_set_classes = [x for x in range(200) if x not in train_classes]
 
